@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:2.8
+    expose:
+      - "6379"
+  rabbitmq:
+    image: rabbitmq:3.7
+    expose:
+      - "5672"
+  dataflow-server:
+    image: springcloud/spring-cloud-dataflow-server-local:${DATAFLOW_VERSION}
+    container_name: dataflow-server
+    ports:
+      - "9393:9393"
+    environment:
+       - spring.cloud.dataflow.applicationProperties.stream.spring.rabbitmq.host=rabbitmq
+       - spring.cloud.dataflow.applicationProperties.stream.spring.redis.host=redis
+       - spring_redis_host=redis
+    depends_on:
+      - rabbitmq
+      - redis
+# app-import:
+#    image: alpine:3.7
+#    depends_on:
+#      - dataflow-server
+#    command: >
+#      /bin/sh -c "
+#        while ! nc -z dataflow-server 9393;
+#        do
+#          sleep 1;
+#        done;
+#        wget -qO- 'http://dataflow-server:9393/apps' --post-data='uri=http://bit.ly/Celsius-SR2-stream-applications-rabbit-maven&force=true';
+#        echo 'Stream apps imported'
+#        wget -qO- 'http://dataflow-server:9393/apps'  --post-data='uri=http://bit.ly/Clark-GA-task-applications-maven&force=true';
+#        echo 'Task apps imported'"
+
