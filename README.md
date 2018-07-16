@@ -16,5 +16,8 @@
 		
 		got to http://192.168.99.100:9393/dashboard
 		
-		 winpty docker exec -it <YOUR_CONTAINER_ID> sh
+		winpty docker exec -it <YOUR_CONTAINER_ID> sh
 		
+	Go to: start-scs.spring.io choose 2.0.3 RELEASE
+		
+		Generate rest-source, choose http source, rabbit binder
