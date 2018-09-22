@@ -19,7 +19,7 @@ import org.springframework.messaging.Message;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = "heart-beat.enabled = false")
 public class SourceTests {
 	
 	@LocalServerPort

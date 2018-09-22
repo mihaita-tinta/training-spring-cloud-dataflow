@@ -15,25 +15,28 @@ services:
     container_name: dataflow-server
     ports:
       - "9393:9393"
+      - "8895:8895"
     environment:
        - spring.cloud.dataflow.applicationProperties.stream.spring.rabbitmq.host=rabbitmq
        - spring.cloud.dataflow.applicationProperties.stream.spring.redis.host=redis
        - spring_redis_host=redis
+    volumes:
+       - /shared-folder-to-virtual-box:/shared-from-windows
     depends_on:
       - rabbitmq
       - redis
-# app-import:
-#    image: alpine:3.7
-#    depends_on:
-#      - dataflow-server
-#    command: >
-#      /bin/sh -c "
-#        while ! nc -z dataflow-server 9393;
-#        do
-#          sleep 1;
-#        done;
-#        wget -qO- 'http://dataflow-server:9393/apps' --post-data='uri=http://bit.ly/Celsius-SR2-stream-applications-rabbit-maven&force=true';
-#        echo 'Stream apps imported'
-#        wget -qO- 'http://dataflow-server:9393/apps'  --post-data='uri=http://bit.ly/Clark-GA-task-applications-maven&force=true';
-#        echo 'Task apps imported'"
-
+  app-import:
+    image: alpine:3.7
+    depends_on:
+      - dataflow-server
+    command: >
+      /bin/sh -c "
+        while ! nc -z dataflow-server 9393;
+        do
+          echo 'Waiting for Dataflow to startup ...'
+          sleep 10;
+        done;
+        wget -qO- 'http://dataflow-server:9393/apps' --post-data='uri=http://bit.ly/Celsius-SR3-stream-applications-rabbit-maven';
+        echo 'Stream apps imported'
+        wget -qO- 'http://dataflow-server:9393/apps'  --post-data='uri=http://bit.ly/Clark-GA-task-applications-maven&force=true';
+        echo 'Task apps imported'"
